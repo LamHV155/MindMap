@@ -72,7 +72,7 @@ namespace MindMap.Controllers.Objects
             cCombobox(listStypePath, new Point(100, 500), new Size(100, 20), "cbbStylePath");
             cLabel(new Point(25, 500), "Style : ", 12, FontStyle.Regular);
 
-            cCombobox(listSize, new Point(100, 550), new Size(50, 20), "cbbSizePath");
+            cCombobox(new List<string>() { "1", "2", "3", "4" }, new Point(100, 550), new Size(50, 20), "cbbSizePath");
             cLabel(new Point(25, 550), "Size : ", 12, FontStyle.Regular);
 
             cBtnColor(new Point(100, 600), new Size(80, 20), "colorPath");

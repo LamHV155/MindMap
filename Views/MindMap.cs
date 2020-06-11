@@ -37,9 +37,25 @@ namespace MindMap
 
             this.Controls.Add(createToolPanel());
             this.Controls.Add(createBoard());
-            formatTable = new FormatTable(new Point(this.Width - 300, 100), new Size(290, this.Height - 100), Color.FromArgb(220, 220, 220), Color.Black);
+            formatTable = new FormatTable(new Point(this.Width - 300, 100), new Size(290, this.Height - 100), Color.FromArgb(225, 225, 225), Color.Black);
+
+            Timer timer = new Timer();
+            timer.Enabled = true;
+            timer.Interval = 2500;
+            timer.Tick += Timer_Tick;
         }
 
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            Draw draw;
+           foreach(Node node in this.board.picbox.Controls)
+            {
+                draw = new Draw(node.drawPath);
+                draw(node.Location, node.parent.Location, board.picbox.BackColor, node.path.size + 2);
+                draw(node.Location, node.parent.Location, node.path.color, node.path.size);
+            }
+        }
 
         private Board createBoard()
         {
@@ -53,8 +69,7 @@ namespace MindMap
             idnode++;
             return board;
         }
-
-       
+  
 
         private Panel createToolPanel()
         {
@@ -124,12 +139,12 @@ namespace MindMap
                 {
                     if(this.formatTable.isOn == false)
                     {
-                        //updateInfoToFormat format = new updateInfoToFormat(this.formatTable.updateFormatTable);
-                        //format(this.node.shape, this.node.BackColor, this.node.Font.FontFamily.Name, (int)this.node.Font.Size, this.node.ForeColor, this.node.path);
-
+                      
                         this.board.Size = new Size(this.Width - 300, this.Height - 140);
                         this.Controls.Add(this.formatTable);
                         this.formatTable.isOn = true;
+                        updateInfoToFormat format = new updateInfoToFormat(this.formatTable.updateFormatTable);
+                        format(this.node.shape, this.node.BackColor, this.node.Font.FontFamily.Name, (int)this.node.Font.Size, this.node.ForeColor, this.node.path);
                     }
                     else
                     {
