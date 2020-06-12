@@ -35,14 +35,14 @@ namespace MindMap
             this.Width = width;
             this.Height = height;
 
+            
+
             this.Controls.Add(createToolPanel());
             this.Controls.Add(createBoard());
+
             formatTable = new FormatTable(new Point(this.Width - 300, 100), new Size(290, this.Height - 100), Color.FromArgb(225, 225, 225), Color.Black);
 
-            Timer timer = new Timer();
-            timer.Enabled = true;
-            timer.Interval = 2500;
-            timer.Tick += Timer_Tick;
+           
         }
 
 
@@ -63,10 +63,16 @@ namespace MindMap
             this.board = board;
             Size nSize = new Size(120, 80);
             Point nLocation = new Point(board.Width/2 - nSize.Width/2, board.Height/2 - nSize.Height/2);
-            path = new mPath(0, 2, Color.Black, "curve");
+            path = new mPath(0, 2, Color.Black, "Line");
             
             board.picbox.Controls.Add(createNode(idnode, "Main Topic", nLocation, nSize, Color.DarkRed, Color.White, path, null, 14));
             idnode++;
+
+            Timer timer = new Timer();
+            timer.Interval = 2500;
+            timer.Tick += Timer_Tick;
+            timer.Enabled = true;
+
             return board;
         }
   
@@ -107,7 +113,7 @@ namespace MindMap
                 {
                     Size nSize = new Size(120, 80);
                     Point nLocation = new Point(board.Width / 2 - nSize.Width / 2, board.Height / 2 - nSize.Height / 2);
-                    path = new mPath(0, 2, Color.Black, "curve");
+                    path = new mPath(0, 2, Color.Black, "Curve");
                     this.board.picbox.Controls.Add(createNode(idnode, "Main Topic", nLocation, nSize, Color.DarkRed, Color.White, path, null, 14));
                     idnode++;
                 }
@@ -124,7 +130,7 @@ namespace MindMap
                 if ((string)fb.Tag == "Add")
                 {
                     getChilLocation cLoc = new getChilLocation(this.node.getChildLocation);
-                    this.board.picbox.Controls.Add(createNode(idnode, "subtopic " + idnode, cLoc(100), new Size(100, 60), Color.IndianRed, Color.White, this.path, this.node));
+                    this.board.picbox.Controls.Add(createNode(idnode, "subtopic " + idnode, cLoc(100), new Size(100, 60), Color.IndianRed, Color.White, this.path, this.node, 12, "Rhombus"));
                     idnode++;
                 }
                 else if((string)fb.Tag == "Delete")

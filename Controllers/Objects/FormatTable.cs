@@ -17,6 +17,7 @@ namespace MindMap.Controllers.Objects
     
         public string shapeNode="";
         public Color colorNode=Color.White;
+        public int sizeNode = 1;
         public string fontText="";
         public int sizeText=0;
         public Color colorText=Color.White;
@@ -44,6 +45,7 @@ namespace MindMap.Controllers.Objects
             }
             List<string> listFont = new List<string>() {"Tahoma", "Times New Roman", "Calibri", "Helvetica", "Georgia" };
             List<string> listStypePath = new List<string>() { "Curve", "Line" };
+            List<string> listSizeNode = new List<string>() { "1", "1.25", "1.5", "1.75", "2", "2.25", "2.5", "2.75", "3" };
             
             cLabel(new Point(10, 50), "Shape", 15, FontStyle.Bold);
 
@@ -52,6 +54,9 @@ namespace MindMap.Controllers.Objects
 
             cBtnColor(new Point(100, 150), new Size(80, 20), "colorShape");
             cLabel(new Point(25, 150), "Color : ", 12, FontStyle.Regular);
+
+            cCombobox(listSizeNode, new Point(100, 200), new Size(60, 20), "cbbSizeShape");
+            cLabel(new Point(25, 200), "Size : ", 12, FontStyle.Regular);
             ///////////////////////////////////////////////////////////////////////////////////////////
 
             cLabel(new Point(10, 250), "Text", 15, FontStyle.Bold);
@@ -97,6 +102,9 @@ namespace MindMap.Controllers.Objects
                 {
                     case "cbbShape":
                         control.Text = this.shapeNode;
+                        break;
+                    case "cbbSizeShape":
+                        control.Text = this.sizeNode.ToString();
                         break;
                     case "cbbFont":
                         control.Text = this.fontText;
@@ -152,6 +160,9 @@ namespace MindMap.Controllers.Objects
             {
                 case "cbbShape":
                     cbb.Text = this.shapeNode;
+                    break;
+                case "cbbSizeShape":
+                    cbb.Text = this.sizeNode.ToString();
                     break;
                 case "cbbFont":
                     cbb.Text = this.fontText;

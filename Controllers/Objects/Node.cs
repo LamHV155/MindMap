@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -19,10 +20,13 @@ namespace MindMap.Controllers.Objects
         public Board board;
         public mPath path;
         public string shape;
+        public Color backcolor;
+        public int size;
 
         private Point curLocation;
         private Point curParentLocation;
-      
+        
+       
         public Node(int id, string label, Point location, Size size, Board board, Color bcolor, Color fcolor, mPath path, string font, int textsise, string shape, Node parent=null) : base()
         {
             SetStyle(ControlStyles.StandardClick | ControlStyles.StandardDoubleClick, true);
@@ -42,48 +46,100 @@ namespace MindMap.Controllers.Objects
             this.Size = size;
             this.board = board;
             this.BackColor = bcolor;
+            this.backcolor = bcolor;
             this.ForeColor = fcolor;
             this.path = path;
             this.Font = new Font(font, textsise);
             this.Text = label;
             this.FlatStyle = FlatStyle.Flat;
             this.shape = shape;
-
-            //this.MouseHover += Node_MouseHover;
-            //this.MouseLeave += Node_MouseLeave;
+            this.size = 1;
+           
             this.LocationChanged += Node_LocationChanged;
             this.parent.LocationChanged += Parent_LocationChanged;
             this.parent.Disposed += Parent_Disposed;
             this.DoubleClick += Node_DoubleClick;
 
-           
+            cShape();
 
             drawPath(this.Location, this.parent.Location, Color.Black, this.path.size);
             ControlExtension.Draggable(this, true);
         }
 
-      
+        public void cShape()
+        {
+            
+            if(this.shape == "Ellipse" || this.shape == "Rhombus")
+            {
+                
+                using (GraphicsPath path = new GraphicsPath(FillMode.Winding))
+                {
+                    if (this.shape == "Ellipse")
+                    {
+                        path.AddEllipse(new Rectangle(0, 0, this.Width, this.Height));
+                        this.Region = new Region(path);
+                        path.Dispose();
+                    }
+                    else if(this.shape == "Rhombus")
+                    {
+                        Point p1 = new Point(this.Width / 2, 0);
+                        Point p2 = new Point(this.Width, this.Height / 2);
+                        Point p3 = new Point(this.Width / 2, this.Height);
+                        Point p4 = new Point(0, this.Height / 2);
+                        Point[] arrPoint = new Point[4] { p1, p2, p3, p4 };
 
-
-
-
-
+                        path.AddPolygon(arrPoint);
+                        this.Region = new Region(path);
+                        path.Dispose();
+                    }
+                   
+                }
+               
+            }
+        }
 
 
         //Event
         #region event
-        //private void Node_MouseLeave(object sender, EventArgs e)
-        //{
-        //    Node node = (Node)sender;
-        //    node.FlatAppearance.BorderSize = 0;
-        //}
 
-        //private void Node_MouseHover(object sender, EventArgs e)
-        //{
-        //    Node node = (Node)sender;
-        //    node.FlatAppearance.BorderColor = Color.DarkCyan;
-        //    node.FlatAppearance.BorderSize = 3;
-        //}
+        private void Node_Paint(object sender, PaintEventArgs e)
+        {
+            Node node = (Node)sender;
+            node.Image = new Bitmap(this.Width-3, this.Height-3);
+            using (Graphics g = Graphics.FromImage(node.Image))
+            {
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+
+                if (this.shape == "Rectangle")
+                {
+                    Size size = new Size(this.Width - 9, this.Height - 9);
+                    Rectangle r = new Rectangle(new Point(3, 3), size);
+                    g.FillRectangle(new SolidBrush(this.backcolor), r);
+             
+                }
+                else if (this.shape == "Ellipse")
+                {
+                    Rectangle r = new Rectangle(new Point(0, 0), node.Image.Size);
+                    g.FillEllipse(new SolidBrush(this.backcolor), r);
+                    this.BackColor = Color.Transparent;
+                }
+                else if (this.shape == "Rhombus")
+                {
+                    Point p1 = new Point(this.Width / 2, 0);
+                    Point p2 = new Point(this.Width, this.Height / 2);
+                    Point p3 = new Point(this.Width / 2, this.Height);
+                    Point p4 = new Point(0, this.Height / 2);
+                    Point[] arrPoint = new Point[4] { p1, p2, p3, p4 };
+
+                    g.FillPolygon(new SolidBrush(this.backcolor), arrPoint);
+                    this.BackColor = Color.Transparent;
+                }
+                node.Refresh();
+            }
+        }
+
+
         private void Node_DoubleClick(object sender, EventArgs e)
         {
             this.Controls.Add(cTextBox());
@@ -126,7 +182,8 @@ namespace MindMap.Controllers.Objects
             TextBox tb = new TextBox();
             tb.Size = this.Size;
             tb.Multiline = true;
-            tb.Location = new Point(0, 0);
+            tb.BorderStyle = BorderStyle.None;
+            tb.Location = new Point(0, this.Height/3);
             tb.BackColor = this.BackColor;
             tb.ForeColor = this.ForeColor;
             tb.Font = this.Font;
@@ -159,7 +216,7 @@ namespace MindMap.Controllers.Objects
         {
             using (var g = Graphics.FromImage(board.picbox.Image))
             {
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                g.SmoothingMode = SmoothingMode.AntiAlias;
                 Point point0 = new Point(selfLocation.X + this.Width / 2, selfLocation.Y + this.Height / 2);
                 Point point2 = new Point(parentLocation.X + this.parent.Width / 2, parentLocation.Y + this.parent.Height / 2);
                 int x1 = (point0.X > point2.X) ? (point2.X + (int)((point0.X - point2.X) / 2)) : (point0.X + (int)((point2.X - point0.X) / 2));
@@ -167,11 +224,11 @@ namespace MindMap.Controllers.Objects
                 Point point1 = new Point(x1, y1);
 
                 Point[] arrP = new Point[3] { point0, point1, point2 };
-                if (this.path.type == "curve")
+                if (this.path.type == "Curve")
                 {
                     g.DrawCurve(new Pen(color, size), arrP);
                 }
-                else
+                else if(this.path.type == "Line")
                 {
                     g.DrawLine(new Pen(color, size), point0, point2);
                 }
