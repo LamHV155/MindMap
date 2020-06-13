@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MindMap.Models;
+
 
 namespace MindMap.Controllers.Objects
 {
@@ -21,7 +21,7 @@ namespace MindMap.Controllers.Objects
         public mPath path;
         public string shape;
         public Color backcolor;
-        public int size;
+        public float size;
 
         private Point curLocation;
         private Point curParentLocation;
@@ -59,72 +59,26 @@ namespace MindMap.Controllers.Objects
             this.parent.LocationChanged += Parent_LocationChanged;
             this.parent.Disposed += Parent_Disposed;
             this.DoubleClick += Node_DoubleClick;
-
+            this.SizeChanged += Node_SizeChanged;
             cShape();
 
             drawPath(this.Location, this.parent.Location, Color.Black, this.path.size);
             ControlExtension.Draggable(this, true);
         }
 
+      
+
         public void cShape()
         {
-            
-            if(this.shape == "Ellipse" || this.shape == "Rhombus")
+            using (GraphicsPath path = new GraphicsPath(FillMode.Winding))
             {
-                
-                using (GraphicsPath path = new GraphicsPath(FillMode.Winding))
+                if (this.shape == "Ellipse")
                 {
-                    if (this.shape == "Ellipse")
-                    {
-                        path.AddEllipse(new Rectangle(0, 0, this.Width, this.Height));
-                        this.Region = new Region(path);
-                        path.Dispose();
-                    }
-                    else if(this.shape == "Rhombus")
-                    {
-                        Point p1 = new Point(this.Width / 2, 0);
-                        Point p2 = new Point(this.Width, this.Height / 2);
-                        Point p3 = new Point(this.Width / 2, this.Height);
-                        Point p4 = new Point(0, this.Height / 2);
-                        Point[] arrPoint = new Point[4] { p1, p2, p3, p4 };
-
-                        path.AddPolygon(arrPoint);
-                        this.Region = new Region(path);
-                        path.Dispose();
-                    }
-                   
+                    path.AddEllipse(new Rectangle(0, 0, this.Width, this.Height));
+                    this.Region = new Region(path);
+                    path.Dispose();
                 }
-               
-            }
-        }
-
-
-        //Event
-        #region event
-
-        private void Node_Paint(object sender, PaintEventArgs e)
-        {
-            Node node = (Node)sender;
-            node.Image = new Bitmap(this.Width-3, this.Height-3);
-            using (Graphics g = Graphics.FromImage(node.Image))
-            {
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-
-
-                if (this.shape == "Rectangle")
-                {
-                    Size size = new Size(this.Width - 9, this.Height - 9);
-                    Rectangle r = new Rectangle(new Point(3, 3), size);
-                    g.FillRectangle(new SolidBrush(this.backcolor), r);
-             
-                }
-                else if (this.shape == "Ellipse")
-                {
-                    Rectangle r = new Rectangle(new Point(0, 0), node.Image.Size);
-                    g.FillEllipse(new SolidBrush(this.backcolor), r);
-                    this.BackColor = Color.Transparent;
-                }
-                else if (this.shape == "Rhombus")
+                else if(this.shape == "Rhombus")
                 {
                     Point p1 = new Point(this.Width / 2, 0);
                     Point p2 = new Point(this.Width, this.Height / 2);
@@ -132,12 +86,34 @@ namespace MindMap.Controllers.Objects
                     Point p4 = new Point(0, this.Height / 2);
                     Point[] arrPoint = new Point[4] { p1, p2, p3, p4 };
 
-                    g.FillPolygon(new SolidBrush(this.backcolor), arrPoint);
-                    this.BackColor = Color.Transparent;
+                    path.AddPolygon(arrPoint);
+                    this.Region = new Region(path);
+                    path.Dispose();
                 }
-                node.Refresh();
+                else if(this.shape == "Rectangle")
+                {
+                    path.AddRectangle(new Rectangle(0, 0, this.Width, this.Height));
+                    this.Region = new Region(path);
+                    path.Dispose();
+                }
+                 
             }
+               
+            
         }
+
+
+        //Event
+        #region event
+
+        private void Node_SizeChanged(object sender, EventArgs e)
+        {
+
+            cShape();
+            this.board.picbox.Image = new Bitmap(this.board.picbox.Image.Width, this.board.picbox.Image.Height);
+        }
+
+      
 
 
         private void Node_DoubleClick(object sender, EventArgs e)
@@ -152,7 +128,7 @@ namespace MindMap.Controllers.Objects
             if(this.IsDisposed == false)
             {
                 drawPath(curLocation, curParentLocation, this.board.picbox.BackColor, this.path.size + 2);
-                drawPath(curLocation, this.parent.Location, Color.Black, this.path.size);
+                drawPath(curLocation, this.parent.Location, this.path.color, this.path.size);
                 curParentLocation = this.parent.Location;
            } 
         }
@@ -162,7 +138,7 @@ namespace MindMap.Controllers.Objects
             expandBoard();
 
             drawPath(curLocation, this.parent.Location, this.board.picbox.BackColor, this.path.size + 2);
-            drawPath(this.Location, this.parent.Location, Color.Black, this.path.size);
+            drawPath(this.Location, this.parent.Location, this.path.color, this.path.size);
             curLocation = this.Location;
         }
 
@@ -232,7 +208,6 @@ namespace MindMap.Controllers.Objects
                 {
                     g.DrawLine(new Pen(color, size), point0, point2);
                 }
-
                 board.picbox.Refresh();
             }
             

@@ -61,10 +61,7 @@
     <Compile Include="Controllers\Objects\Node.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controllers\Objects\Relationship.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Models\mPath.cs" />
+    <Compile Include="Controllers\Objects\mPath.cs" />
     <Compile Include="Views\MindMap.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,6 +96,8 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

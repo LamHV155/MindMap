@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MindMap.Models;
+using MindMap.Controllers.Objects;
 
 namespace MindMap.Controllers.Objects
 {
@@ -17,20 +17,25 @@ namespace MindMap.Controllers.Objects
     
         public string shapeNode="";
         public Color colorNode=Color.White;
-        public int sizeNode = 1;
+        public float sizeNode = 1;
         public string fontText="";
-        public int sizeText=0;
+        public int sizeText=1;
         public Color colorText=Color.White;
         public string stylePath="";
-        public int sizePath=0;
+        public int sizePath=1;
         public Color colorPath=Color.White;
-     
-        public FormatTable(Point location, Size size, Color bcolor, Color fcolor) : base()
+        public MindMap mindmap;
+
+
+       
+        public FormatTable(Point location, Size size, Color bcolor, Color fcolor, MindMap mm) : base()
         {
             this.Location = location;
             this.Size = size;
             this.BackColor = bcolor;
             this.ForeColor = fcolor;
+            this.mindmap = mm;
+            
             splitLayout();
         }
 
@@ -39,13 +44,13 @@ namespace MindMap.Controllers.Objects
         {
             List<string> listShape = new List<string>() {"Rectangle", "Ellipse", "Rhombus"};
             List<string> listSize = new List<string>() { };
-            for(int i = 1; i <=20; i++)
+            for(int i = 1; i <=25; i++)
             {
                 listSize.Add(i.ToString());
             }
             List<string> listFont = new List<string>() {"Tahoma", "Times New Roman", "Calibri", "Helvetica", "Georgia" };
             List<string> listStypePath = new List<string>() { "Curve", "Line" };
-            List<string> listSizeNode = new List<string>() { "1", "1.25", "1.5", "1.75", "2", "2.25", "2.5", "2.75", "3" };
+            List<string> listSizeNode = new List<string>() { "1", "1.25", "1.5", "1.75", "2"};
             
             cLabel(new Point(10, 50), "Shape", 15, FontStyle.Bold);
 
@@ -77,7 +82,7 @@ namespace MindMap.Controllers.Objects
             cCombobox(listStypePath, new Point(100, 500), new Size(100, 20), "cbbStylePath");
             cLabel(new Point(25, 500), "Style : ", 12, FontStyle.Regular);
 
-            cCombobox(new List<string>() { "1", "2", "3", "4" }, new Point(100, 550), new Size(50, 20), "cbbSizePath");
+            cCombobox(new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8"}, new Point(100, 550), new Size(50, 20), "cbbSizePath");
             cLabel(new Point(25, 550), "Size : ", 12, FontStyle.Regular);
 
             cBtnColor(new Point(100, 600), new Size(80, 20), "colorPath");
@@ -85,17 +90,18 @@ namespace MindMap.Controllers.Objects
 
         }
 
-        public void updateFormatTable(string shape, Color colorNode, string font, int textsize, Color colorText, mPath path)
+        public void updateFormatTable(string shape, Color colorNode, float sizeNode, string font, int textsize, Color colorText, mPath path)
         {
             this.shapeNode = shape;
             this.colorNode = colorNode;
+            this.sizeNode = sizeNode;
             this.fontText = font;
             this.sizeText = textsize;
             this.colorText = colorText;
             this.stylePath = path.type;
             this.sizePath = path.size;
             this.colorPath = path.color;
-
+            
             foreach(Control control in this.Controls)
             {
                 switch (control.Tag)
@@ -177,9 +183,47 @@ namespace MindMap.Controllers.Objects
                     cbb.Text = this.sizePath.ToString();
                     break;
             }
+            cbb.TextChanged += Cbb_TextChanged;
             return cbb;
             
         }
+
+        private void Cbb_TextChanged(object sender, EventArgs e)
+        {
+            ComboBox cbb = (ComboBox)sender;
+
+            switch ((string)cbb.Tag)
+            {
+                case "cbbShape":
+                    this.shapeNode = cbb.Text;
+                    break;
+                case "cbbSizeShape":
+                    this.sizeNode = float.Parse(cbb.Text);
+                    break;
+                case "cbbFont":
+                    this.fontText = cbb.Text;
+                    break;
+                case "cbbTextSize":
+                    this.sizeText = int.Parse(cbb.Text);
+                    break;
+                case "cbbStylePath":
+                    this.stylePath = cbb.Text;
+                    break;
+                case "cbbSizePath":
+                    this.sizePath = int.Parse(cbb.Text);
+                    break;
+            }
+
+
+            mindmap.updateNode(this.shapeNode, this.colorNode, this.sizeNode, this.fontText, this.sizeText, this.colorText, this.stylePath, this.sizePath, this.colorPath);
+            mindmap.node.cShape();
+            if((string)cbb.Tag == "cbbStylePath")
+            {
+                mindmap.board.picbox.Image = new Bitmap(mindmap.board.picbox.Width, mindmap.board.picbox.Height);
+            }
+            
+        }
+
 
         private Button cBtnColor(Point location, Size size, string idtag)
         {
@@ -190,6 +234,7 @@ namespace MindMap.Controllers.Objects
             btn.FlatStyle = FlatStyle.Flat;
             btn.Tag = idtag;
             btn.Click += BtnColor_Click;
+       
             this.Controls.Add(btn);
             switch (idtag)
             {
@@ -206,10 +251,31 @@ namespace MindMap.Controllers.Objects
             return btn;
         }
 
+    
         private void BtnColor_Click(object sender, EventArgs e)
         {
+            Button btn = (Button)sender;
             ColorDialog cd = new ColorDialog();
-            cd.ShowDialog();
+    
+            if(cd.ShowDialog() == DialogResult.OK)
+            {
+                switch ((string)btn.Tag)
+                {
+                    case "colorShape":
+                        btn.BackColor = cd.Color;
+                        this.colorNode = cd.Color;
+                        break;
+                    case "colorText":
+                        btn.BackColor = cd.Color;
+                        this.colorText = cd.Color;
+                        break;
+                    case "colorPath":
+                        btn.BackColor = cd.Color;
+                        this.colorPath = cd.Color;
+                        break;
+                }
+            }
+            mindmap.updateNode(this.shapeNode, this.colorNode, this.sizeNode, this.fontText, this.sizeText, this.colorText, this.stylePath, this.sizePath, this.colorPath);
         }
     }
 }
