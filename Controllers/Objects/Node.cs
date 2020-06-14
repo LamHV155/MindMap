@@ -46,7 +46,7 @@ namespace MindMap.Controllers.Objects
             this.Size = size;
             this.board = board;
             this.BackColor = bcolor;
-            this.backcolor = bcolor;
+          
             this.ForeColor = fcolor;
             this.path = path;
             this.Font = new Font(font, textsise);

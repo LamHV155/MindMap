@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="MINDMAPModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="BOARD">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WIDTH" Type="int" Nullable="false" />
+          <Property Name="HEIGHT" Type="int" Nullable="false" />
+          <Property Name="COLOR" Type="varchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MENU">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="COLOR_BOARD" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="SHAPE_PARENT" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="SHAPE_CHILD" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="COLOR_PARENT" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="COLOR_CHILD" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="COLOR_PATH" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="STYLE_PATH" Type="varchar" MaxLength="15" Nullable="false" />
+        </EntityType>
+        <EntityType Name="STORAGE">
+          <Key>
+            <PropertyRef Name="NAME_S" />
+            <PropertyRef Name="ID_BOARD" />
+          </Key>
+          <Property Name="NAME_S" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="ID_BOARD" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TOPIC">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ID_BOARD" Type="int" />
+          <Property Name="ID_PARENT" Type="int" />
+          <Property Name="LABEL_TP" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="POS_X" Type="int" Nullable="false" />
+          <Property Name="POS_Y" Type="int" Nullable="false" />
+          <Property Name="WIDTH" Type="int" Nullable="false" />
+          <Property Name="HEIGHT" Type="int" Nullable="false" />
+          <Property Name="SIZE" Type="int" Nullable="false" />
+          <Property Name="BACKCOLOR" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="FORECOLOR" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="SHAPE" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="TEXT_SIZE" Type="int" Nullable="false" />
+          <Property Name="FONT" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="STYLE_PATH" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="COLOR_PATH" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="SIZE_PATH" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__STORAGE__ID_BOAR__5CD6CB2B">
+          <End Role="BOARD" Type="Self.BOARD" Multiplicity="1" />
+          <End Role="STORAGE" Type="Self.STORAGE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BOARD">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STORAGE">
+              <PropertyRef Name="ID_BOARD" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TOPIC__ID_BOARD__3B75D760">
+          <End Role="BOARD" Type="Self.BOARD" Multiplicity="0..1" />
+          <End Role="TOPIC" Type="Self.TOPIC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BOARD">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TOPIC">
+              <PropertyRef Name="ID_BOARD" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TOPIC__ID_PARENT__3C69FB99">
+          <End Role="TOPIC" Type="Self.TOPIC" Multiplicity="0..1" />
+          <End Role="TOPIC1" Type="Self.TOPIC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TOPIC">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TOPIC1">
+              <PropertyRef Name="ID_PARENT" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MINDMAPModelStoreContainer">
+          <EntitySet Name="BOARD" EntityType="Self.BOARD" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MENU" EntityType="Self.MENU" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="STORAGE" EntityType="Self.STORAGE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TOPIC" EntityType="Self.TOPIC" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__STORAGE__ID_BOAR__5CD6CB2B" Association="Self.FK__STORAGE__ID_BOAR__5CD6CB2B">
+            <End Role="BOARD" EntitySet="BOARD" />
+            <End Role="STORAGE" EntitySet="STORAGE" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TOPIC__ID_BOARD__3B75D760" Association="Self.FK__TOPIC__ID_BOARD__3B75D760">
+            <End Role="BOARD" EntitySet="BOARD" />
+            <End Role="TOPIC" EntitySet="TOPIC" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TOPIC__ID_PARENT__3C69FB99" Association="Self.FK__TOPIC__ID_PARENT__3C69FB99">
+            <End Role="TOPIC" EntitySet="TOPIC" />
+            <End Role="TOPIC1" EntitySet="TOPIC" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MINDMAPModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="BOARD">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WIDTH" Type="Int32" Nullable="false" />
+          <Property Name="HEIGHT" Type="Int32" Nullable="false" />
+          <Property Name="COLOR" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="STORAGEs" Relationship="Self.FK__STORAGE__ID_BOAR__5CD6CB2B" FromRole="BOARD" ToRole="STORAGE" />
+          <NavigationProperty Name="TOPICs" Relationship="Self.FK__TOPIC__ID_BOARD__3B75D760" FromRole="BOARD" ToRole="TOPIC" />
+        </EntityType>
+        <EntityType Name="MENU">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="COLOR_BOARD" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="SHAPE_PARENT" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="SHAPE_CHILD" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="COLOR_PARENT" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="COLOR_CHILD" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="COLOR_PATH" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="STYLE_PATH" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="STORAGE">
+          <Key>
+            <PropertyRef Name="NAME_S" />
+            <PropertyRef Name="ID_BOARD" />
+          </Key>
+          <Property Name="NAME_S" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ID_BOARD" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="BOARD" Relationship="Self.FK__STORAGE__ID_BOAR__5CD6CB2B" FromRole="STORAGE" ToRole="BOARD" />
+        </EntityType>
+        <EntityType Name="TOPIC">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="ID_BOARD" Type="Int32" />
+          <Property Name="ID_PARENT" Type="Int32" />
+          <Property Name="LABEL_TP" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="POS_X" Type="Int32" Nullable="false" />
+          <Property Name="POS_Y" Type="Int32" Nullable="false" />
+          <Property Name="WIDTH" Type="Int32" Nullable="false" />
+          <Property Name="HEIGHT" Type="Int32" Nullable="false" />
+          <Property Name="SIZE" Type="Int32" Nullable="false" />
+          <Property Name="BACKCOLOR" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="FORECOLOR" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="SHAPE" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="TEXT_SIZE" Type="Int32" Nullable="false" />
+          <Property Name="FONT" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="STYLE_PATH" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="COLOR_PATH" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="SIZE_PATH" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="BOARD" Relationship="Self.FK__TOPIC__ID_BOARD__3B75D760" FromRole="TOPIC" ToRole="BOARD" />
+          <NavigationProperty Name="TOPIC1" Relationship="Self.FK__TOPIC__ID_PARENT__3C69FB99" FromRole="TOPIC" ToRole="TOPIC1" />
+          <NavigationProperty Name="TOPIC2" Relationship="Self.FK__TOPIC__ID_PARENT__3C69FB99" FromRole="TOPIC1" ToRole="TOPIC" />
+        </EntityType>
+        <Association Name="FK__STORAGE__ID_BOAR__5CD6CB2B">
+          <End Role="BOARD" Type="Self.BOARD" Multiplicity="1" />
+          <End Role="STORAGE" Type="Self.STORAGE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BOARD">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STORAGE">
+              <PropertyRef Name="ID_BOARD" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TOPIC__ID_BOARD__3B75D760">
+          <End Role="BOARD" Type="Self.BOARD" Multiplicity="0..1" />
+          <End Role="TOPIC" Type="Self.TOPIC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BOARD">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TOPIC">
+              <PropertyRef Name="ID_BOARD" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TOPIC__ID_PARENT__3C69FB99">
+          <End Role="TOPIC" Type="Self.TOPIC" Multiplicity="0..1" />
+          <End Role="TOPIC1" Type="Self.TOPIC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TOPIC">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TOPIC1">
+              <PropertyRef Name="ID_PARENT" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MINDMAPEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="BOARDs" EntityType="Self.BOARD" />
+          <EntitySet Name="MENUs" EntityType="Self.MENU" />
+          <EntitySet Name="STORAGEs" EntityType="Self.STORAGE" />
+          <EntitySet Name="TOPICs" EntityType="Self.TOPIC" />
+          <AssociationSet Name="FK__STORAGE__ID_BOAR__5CD6CB2B" Association="Self.FK__STORAGE__ID_BOAR__5CD6CB2B">
+            <End Role="BOARD" EntitySet="BOARDs" />
+            <End Role="STORAGE" EntitySet="STORAGEs" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TOPIC__ID_BOARD__3B75D760" Association="Self.FK__TOPIC__ID_BOARD__3B75D760">
+            <End Role="BOARD" EntitySet="BOARDs" />
+            <End Role="TOPIC" EntitySet="TOPICs" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TOPIC__ID_PARENT__3C69FB99" Association="Self.FK__TOPIC__ID_PARENT__3C69FB99">
+            <End Role="TOPIC" EntitySet="TOPICs" />
+            <End Role="TOPIC1" EntitySet="TOPICs" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MINDMAPModelStoreContainer" CdmEntityContainer="MINDMAPEntities">
+          <EntitySetMapping Name="BOARDs">
+            <EntityTypeMapping TypeName="MINDMAPModel.BOARD">
+              <MappingFragment StoreEntitySet="BOARD">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="WIDTH" ColumnName="WIDTH" />
+                <ScalarProperty Name="HEIGHT" ColumnName="HEIGHT" />
+                <ScalarProperty Name="COLOR" ColumnName="COLOR" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MENUs">
+            <EntityTypeMapping TypeName="MINDMAPModel.MENU">
+              <MappingFragment StoreEntitySet="MENU">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="COLOR_BOARD" ColumnName="COLOR_BOARD" />
+                <ScalarProperty Name="SHAPE_PARENT" ColumnName="SHAPE_PARENT" />
+                <ScalarProperty Name="SHAPE_CHILD" ColumnName="SHAPE_CHILD" />
+                <ScalarProperty Name="COLOR_PARENT" ColumnName="COLOR_PARENT" />
+                <ScalarProperty Name="COLOR_CHILD" ColumnName="COLOR_CHILD" />
+                <ScalarProperty Name="COLOR_PATH" ColumnName="COLOR_PATH" />
+                <ScalarProperty Name="STYLE_PATH" ColumnName="STYLE_PATH" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="STORAGEs">
+            <EntityTypeMapping TypeName="MINDMAPModel.STORAGE">
+              <MappingFragment StoreEntitySet="STORAGE">
+                <ScalarProperty Name="NAME_S" ColumnName="NAME_S" />
+                <ScalarProperty Name="ID_BOARD" ColumnName="ID_BOARD" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TOPICs">
+            <EntityTypeMapping TypeName="MINDMAPModel.TOPIC">
+              <MappingFragment StoreEntitySet="TOPIC">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ID_BOARD" ColumnName="ID_BOARD" />
+                <ScalarProperty Name="ID_PARENT" ColumnName="ID_PARENT" />
+                <ScalarProperty Name="LABEL_TP" ColumnName="LABEL_TP" />
+                <ScalarProperty Name="POS_X" ColumnName="POS_X" />
+                <ScalarProperty Name="POS_Y" ColumnName="POS_Y" />
+                <ScalarProperty Name="WIDTH" ColumnName="WIDTH" />
+                <ScalarProperty Name="HEIGHT" ColumnName="HEIGHT" />
+                <ScalarProperty Name="SIZE" ColumnName="SIZE" />
+                <ScalarProperty Name="BACKCOLOR" ColumnName="BACKCOLOR" />
+                <ScalarProperty Name="FORECOLOR" ColumnName="FORECOLOR" />
+                <ScalarProperty Name="SHAPE" ColumnName="SHAPE" />
+                <ScalarProperty Name="TEXT_SIZE" ColumnName="TEXT_SIZE" />
+                <ScalarProperty Name="FONT" ColumnName="FONT" />
+                <ScalarProperty Name="STYLE_PATH" ColumnName="STYLE_PATH" />
+                <ScalarProperty Name="COLOR_PATH" ColumnName="COLOR_PATH" />
+                <ScalarProperty Name="SIZE_PATH" ColumnName="SIZE_PATH" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

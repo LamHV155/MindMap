@@ -1,4 +1,4 @@
-﻿using MindMap.Controllers.Objects;
+﻿
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,6 +11,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MindMap.Controllers;
+using MindMap.Controllers.Objects;
+using MindMap.Views;
 
 namespace MindMap
 {
@@ -32,11 +35,10 @@ namespace MindMap
         private Color M_colorPath = Color.DarkGray;
 
 
+        //List
+        List<Node> listNode = new List<Node>();
+       
     
-        private delegate Point getChilLocation(int width);
-        private delegate void Draw(Point selfLoc, Point parentLoc, Color color, int size);
-        private delegate void Expand();
-        private delegate void updateInfoToFormat(string shape, Color colorNode, float sizeNode, string font, int textsize, Color colorText, mPath path);
         public MindMap()
         {
             InitializeComponent();
@@ -50,13 +52,17 @@ namespace MindMap
             timer.Tick += Timer_Tick;
             timer.Enabled = true;
 
+
+            idnode = TOPICcontroller.getID();
+           
             formatTable = new FormatTable(new Point(this.Width - 300, 100), new Size(290, this.Height - 100), Color.FromArgb(225, 225, 225), Color.Black, this);
 
             this.Controls.Add(createToolPanel());
             this.Controls.Add(createBoard());
         }
 
-
+        //Event
+        #region Event
         private void Timer_Tick(object sender, EventArgs e)
         {
             
@@ -67,11 +73,17 @@ namespace MindMap
             }
         }
 
+        #endregion
+
+
+
+        //Tools Panel & Board
+        #region Panel & Board
         private Board createBoard()
         {
             Board board = new Board(M_colorBoard, new Point(0, 100), new Size(this.Width - 20, this.Height - 140));
             this.board = board;
-            Size nSize = new Size(120, 80);
+            Size nSize = new Size(180, 100);
             Point nLocation = new Point(board.Width/2 - nSize.Width/2, board.Height/2 - nSize.Height/2);
             path = new mPath(4, M_colorPath, M_stylePath);
 
@@ -80,10 +92,13 @@ namespace MindMap
             this.node = n;
             idnode++;
 
+
+            //Add List 
+            listNode.Add(n);
+            
             return board;
         }
   
-
         private Panel createToolPanel()
         {
             Panel pnl = new Panel();
@@ -98,7 +113,12 @@ namespace MindMap
             pnl.Controls.Add(createButton(new Point(pnl.Width - 150, 10), new Size(70, 35), Color.FromArgb(235, 235, 235), Color.Gray, node, "Format"));
             return pnl;
         }
+        #endregion
 
+
+
+        //Function Button
+        #region Function Button
         private Button createButton(Point location, Size size, Color backcolor, Color forecolor, Node n, string label)
         {
             fButton fb = new fButton(location, size, n, label, backcolor, forecolor);
@@ -116,11 +136,16 @@ namespace MindMap
             {
                 if((string)fb.Tag == "Add")
                 {
-                    Size nSize = new Size(120, 80);
+                    Size nSize = new Size(180, 100);
                     Point nLocation = new Point(board.Width / 2 - nSize.Width / 2, board.Height / 2 - nSize.Height / 2);
-                    path = new mPath(2, M_colorPath, M_stylePath);
-                    this.board.picbox.Controls.Add(createNode(idnode, "Main Topic", nLocation, nSize, M_colorParentNode, Color.White, path, null, 14, M_shapeParentNode));
+                    path = new mPath(3, M_colorPath, M_stylePath);
+
+                    Node n = createNode(idnode, "Main Topic", nLocation, nSize, M_colorParentNode, Color.White, path, null, 14, M_shapeParentNode);
+                    this.board.picbox.Controls.Add(n);
                     idnode++;
+
+                    listNode.Add(n);
+
                 }
                 else{
                     MessageBox.Show("Vui lòng thêm node mới !");
@@ -134,14 +159,32 @@ namespace MindMap
             {
                 if ((string)fb.Tag == "Add")
                 {
-                    getChilLocation cLoc = new getChilLocation(this.node.getChildLocation);
-                    this.board.picbox.Controls.Add(createNode(idnode, "subtopic " + idnode, cLoc(100), new Size(100, 60), M_colorChildNode, Color.White, this.path, this.node, 12, M_shapeChildNode));
+                    Point cLoc = this.node.getChildLocation(this.node.Width);
+                    Node n = createNode(idnode, "subtopic " + idnode, cLoc, new Size(150, 80), M_colorChildNode, Color.White, this.path, this.node, 12, M_shapeChildNode);
+                    this.board.picbox.Controls.Add(n);
                     idnode++;
+
+                    //Add list
+                    listNode.Add(n);
+
                 }
                 else if((string)fb.Tag == "Delete")
                 {
-                    Draw draw = new Draw(node.drawPath);
-                    draw(this.node.Location, this.node.parent.Location, this.board.picbox.BackColor, this.node.path.size + 2);
+                   
+                    this.node.drawPath(this.node.Location, this.node.parent.Location, this.board.picbox.BackColor, this.node.path.size + 2);
+                    
+                    //get out of list
+                    foreach(Node n in listNode)
+                    {
+                        if(this.node.id == n.id)
+                        {
+                            if(listNode.Count != 1)
+                                removeChildOfNode(n);
+                            listNode.Remove(n);
+                            break;
+                        }
+                    }
+
                     node.Dispose();
                     this.node = null;
                     
@@ -154,8 +197,7 @@ namespace MindMap
                         this.board.Size = new Size(this.Width - 300, this.Height - 140);
                         this.Controls.Add(this.formatTable);
                         this.formatTable.isOn = true;
-                        updateInfoToFormat format = new updateInfoToFormat(this.formatTable.updateFormatTable);
-                        format(this.node.shape, this.node.BackColor, this.node.size, this.node.Font.FontFamily.Name, (int)this.node.Font.Size, this.node.ForeColor, this.node.path);
+                        this.formatTable.updateFormatTable(this.node.shape, this.node.BackColor, this.node.size, this.node.Font.FontFamily.Name, (int)this.node.Font.Size, this.node.ForeColor, this.node.path);
                     }
                     else
                     {
@@ -169,16 +211,30 @@ namespace MindMap
             }
 
         }
+        private void removeChildOfNode(Node parent)
+        {
+  
+            foreach(Node n in this.listNode.ToList())
+            {
+                if (parent.id == n.parent.id)
+                {
+                    removeChildOfNode(n);
+                    this.listNode.Remove(n);                   
+                }
+            }
+        }
 
+        #endregion
+
+
+        //Node
+        #region Node
         private Node createNode(int id, string label, Point location, Size size, Color bcolor, Color fcolor, mPath path, Node node = null, int textsize=12, string shape = "Rectangle", string font="tahoma")
         {
             Node n = new Node(id, label, location, size, this.board, bcolor, fcolor, path, font, textsize, shape, node);
             n.Click += Node_Click;
-
-            
-
-            Expand expand = new Expand(n.expandBoard);
-            expand();
+           
+            n.expandBoard();
             return n;
         }
 
@@ -194,23 +250,20 @@ namespace MindMap
             no.FlatAppearance.BorderSize = 3;
             this.node = no;
 
-            updateInfoToFormat format = new updateInfoToFormat(this.formatTable.updateFormatTable);
-            format(this.node.shape, this.node.BackColor, this.node.size, this.node.Font.FontFamily.Name, (int)this.node.Font.Size, this.node.ForeColor, this.node.path);
+            this.formatTable.updateFormatTable(this.node.shape, this.node.BackColor, this.node.size, this.node.Font.FontFamily.Name, (int)this.node.Font.Size, this.node.ForeColor, this.node.path);
 
         }
+
+        #endregion
+
 
         public void updateNode(string shape, Color colorNode, float sizeShape, string font, int textSize, Color colorText, string stylePath, int sizePath, Color colorPath)
         {
           
             this.node.shape = shape;
             this.node.BackColor = colorNode;
-            if(this.node.size < sizeShape)
+            if(this.node.size != sizeShape)
             {
-                this.node.size = sizeShape;
-                this.node.Width = (int)(this.node.Width * this.node.size);
-                this.node.Height = (int)(this.node.Height * this.node.size);
-            } else if(this.node.size > sizeShape){
-                
                 this.node.Width = (int)(this.node.Width * (sizeShape / this.node.size));
                 this.node.Height = (int)(this.node.Height * (sizeShape / this.node.size));
                 this.node.size = sizeShape;
@@ -220,5 +273,23 @@ namespace MindMap
             this.node.path = new mPath(sizePath, colorPath, stylePath);
         }
 
+
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmSave formSave = new frmSave();
+            formSave.ShowDialog();
+        }
+
+        private void openToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            frmOpen formOpen = new frmOpen();
+            formOpen.ShowDialog();
+        }
     }
 }
