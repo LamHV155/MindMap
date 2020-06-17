@@ -14,6 +14,8 @@ using System.Windows.Forms;
 using MindMap.Controllers;
 using MindMap.Controllers.Objects;
 using MindMap.Views;
+using MindMap.Models;
+using System.Security.Permissions;
 
 namespace MindMap
 {
@@ -25,6 +27,8 @@ namespace MindMap
         private mPath path;
         private FormatTable formatTable;
 
+        public bool isExisted = false;       
+
         //data from menu
         private Color M_colorBoard = Color.LightYellow;
         private Color M_colorParentNode = Color.DarkRed;
@@ -35,17 +39,19 @@ namespace MindMap
         private Color M_colorPath = Color.DarkGray;
 
 
-        //List
-        List<Node> listNode = new List<Node>();
-       
-    
+        private List<Node> listNode;
+        public List<Node> listDelete = new List<Node>() { };
+   
+
         public MindMap()
         {
             InitializeComponent();
+
             int width = Screen.PrimaryScreen.WorkingArea.Width;
             int height = Screen.PrimaryScreen.WorkingArea.Height;
             this.Width = width;
             this.Height = height;
+            this.listNode = new List<Node>();
             
             Timer timer = new Timer();
             timer.Interval = 1000;
@@ -58,8 +64,39 @@ namespace MindMap
             formatTable = new FormatTable(new Point(this.Width - 300, 100), new Size(290, this.Height - 100), Color.FromArgb(225, 225, 225), Color.Black, this);
 
             this.Controls.Add(createToolPanel());
-            this.Controls.Add(createBoard());
+            this.Controls.Add(createBoardAndMainNode());
         }
+
+        public MindMap(Color colorBoard, Color colorParent, Color colorChild, Color colorPath, string shapeParent, string shapeChild, string style)
+        {
+            InitializeComponent();
+            int width = Screen.PrimaryScreen.WorkingArea.Width;
+            int height = Screen.PrimaryScreen.WorkingArea.Height;
+            this.Width = width;
+            this.Height = height;
+            this.listNode = new List<Node>();
+
+
+            this.M_colorBoard = colorBoard;
+            this.M_colorChildNode = colorChild;
+            this.M_colorParentNode = colorParent;
+            this.M_colorPath = colorPath;
+            this.M_shapeChildNode = shapeChild;
+            this.M_shapeParentNode = shapeParent;
+            this.M_stylePath = style;
+
+            Timer timer = new Timer();
+            timer.Interval = 1000;
+            timer.Tick += Timer_Tick;
+            timer.Enabled = true;
+
+            idnode = TOPICcontroller.getID();
+
+            formatTable = new FormatTable(new Point(this.Width - 300, 100), new Size(290, this.Height - 100), Color.FromArgb(225, 225, 225), Color.Black, this);
+            this.Controls.Add(createToolPanel());
+            this.Controls.Add(createBoardAndMainNode());
+        }
+
 
         //Event
         #region Event
@@ -68,7 +105,6 @@ namespace MindMap
             
            foreach(Node node in this.board.picbox.Controls)
             {
-                node.drawPath(node.Location, node.parent.Location, board.picbox.BackColor, node.path.size + 2);
                 node.drawPath(node.Location, node.parent.Location, node.path.color, node.path.size);
             }
         }
@@ -79,24 +115,32 @@ namespace MindMap
 
         //Tools Panel & Board
         #region Panel & Board
-        private Board createBoard()
+        private Board createBoardAndMainNode()
         {
-            Board board = new Board(M_colorBoard, new Point(0, 100), new Size(this.Width - 20, this.Height - 140));
+            Board board = new Board(-1, M_colorBoard, new Point(0, 100), new Size(this.Width - 20, this.Height - 140));
             this.board = board;
             Size nSize = new Size(180, 100);
             Point nLocation = new Point(board.Width/2 - nSize.Width/2, board.Height/2 - nSize.Height/2);
             path = new mPath(4, M_colorPath, M_stylePath);
 
-            Node n = createNode(idnode, "Main Topic", nLocation, nSize, M_colorParentNode, Color.White, path, null, 14, M_shapeParentNode);
+            Node n = createNode(idnode, "Main Topic", nLocation, nSize, M_colorParentNode, Color.White, path, 1, null, 14, M_shapeParentNode);
             board.picbox.Controls.Add(n);
-            this.node = n;
-            idnode++;
 
+            displayBorderNode(n);
+            idnode++;
 
             //Add List 
             listNode.Add(n);
             
             return board;
+        }
+
+        public void createBoard(BOARD b)
+        {
+            Color color = System.Drawing.ColorTranslator.FromHtml(b.COLOR);
+            Board board = new Board(b.ID, color, new Point(0, 100), new Size(b.WIDTH, b.HEIGHT));
+            this.board = board;
+            this.Controls.Add(this.board);
         }
   
         private Panel createToolPanel()
@@ -140,12 +184,13 @@ namespace MindMap
                     Point nLocation = new Point(board.Width / 2 - nSize.Width / 2, board.Height / 2 - nSize.Height / 2);
                     path = new mPath(3, M_colorPath, M_stylePath);
 
-                    Node n = createNode(idnode, "Main Topic", nLocation, nSize, M_colorParentNode, Color.White, path, null, 14, M_shapeParentNode);
+                    Node n = createNode(idnode, "Main Topic", nLocation, nSize, M_colorParentNode, Color.White, path, 1, null, 14, M_shapeParentNode);
                     this.board.picbox.Controls.Add(n);
                     idnode++;
 
+                    
                     listNode.Add(n);
-
+                                            
                 }
                 else{
                     MessageBox.Show("Vui lòng thêm node mới !");
@@ -160,8 +205,10 @@ namespace MindMap
                 if ((string)fb.Tag == "Add")
                 {
                     Point cLoc = this.node.getChildLocation(this.node.Width);
-                    Node n = createNode(idnode, "subtopic " + idnode, cLoc, new Size(150, 80), M_colorChildNode, Color.White, this.path, this.node, 12, M_shapeChildNode);
+                    Node n = createNode(idnode, "subtopic " + idnode, cLoc, new Size(150, 80), M_colorChildNode, Color.White, this.path, 1, this.node, 12, M_shapeChildNode);
                     this.board.picbox.Controls.Add(n);
+
+                    displayBorderNode(n);
                     idnode++;
 
                     //Add list
@@ -178,11 +225,19 @@ namespace MindMap
                     {
                         if(this.node.id == n.id)
                         {
-                            if(listNode.Count != 1)
-                                removeChildOfNode(n);
+                           
                             listNode.Remove(n);
-                            break;
+                            removeChildOfNode(n);
+                            if (isExisted)
+                            {
+                                listDelete.Add(n);
+                            }
+                            break;                           
                         }
+                    }
+                    foreach(Node n in listDelete.ToList())
+                    {
+                        removeChildOfNode(n);
                     }
 
                     node.Dispose();
@@ -213,13 +268,16 @@ namespace MindMap
         }
         private void removeChildOfNode(Node parent)
         {
-  
-            foreach(Node n in this.listNode.ToList())
+
+            foreach (Node n in this.listNode.ToList())
             {
-                if (parent.id == n.parent.id)
+                if (!listNode.Contains(parent) && n.parent.id == parent.id)
                 {
-                    removeChildOfNode(n);
-                    this.listNode.Remove(n);                   
+                    this.listNode.Remove(n);
+                    if (isExisted)
+                    {
+                        listDelete.Add(n);
+                    }                 
                 }
             }
         }
@@ -229,9 +287,9 @@ namespace MindMap
 
         //Node
         #region Node
-        private Node createNode(int id, string label, Point location, Size size, Color bcolor, Color fcolor, mPath path, Node node = null, int textsize=12, string shape = "Rectangle", string font="tahoma")
+        public Node createNode(int id, string label, Point location, Size size, Color bcolor, Color fcolor, mPath path, float size2, Node node = null, int textsize=12, string shape = "Rectangle", string font="tahoma")
         {
-            Node n = new Node(id, label, location, size, this.board, bcolor, fcolor, path, font, textsize, shape, node);
+            Node n = new Node(id, label, location, size, this.board, bcolor, fcolor, path, size2, font, textsize, shape, node);
             n.Click += Node_Click;
            
             n.expandBoard();
@@ -241,17 +299,22 @@ namespace MindMap
         private void Node_Click(object sender, EventArgs e)
         {
             Node no = (Node)sender;
-            
-            foreach(Node node in this.board.picbox.Controls)
+
+            displayBorderNode(no);
+
+            this.formatTable.updateFormatTable(this.node.shape, this.node.BackColor, this.node.size, this.node.Font.FontFamily.Name, (int)this.node.Font.Size, this.node.ForeColor, this.node.path);
+
+        }
+
+        private void displayBorderNode(Node no)
+        {
+            foreach (Node node in this.board.picbox.Controls)
             {
                 node.FlatAppearance.BorderSize = 0;
             }
             no.FlatAppearance.BorderColor = Color.DarkCyan;
             no.FlatAppearance.BorderSize = 3;
             this.node = no;
-
-            this.formatTable.updateFormatTable(this.node.shape, this.node.BackColor, this.node.size, this.node.Font.FontFamily.Name, (int)this.node.Font.Size, this.node.ForeColor, this.node.path);
-
         }
 
         #endregion
@@ -273,7 +336,12 @@ namespace MindMap
             this.node.path = new mPath(sizePath, colorPath, stylePath);
         }
 
-
+        public void reNewListNode(List<Node> listN, BOARD board)
+        {
+            this.listNode.Clear();
+            this.listNode.AddRange(listN);
+            this.isExisted = true;
+        }
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -283,13 +351,28 @@ namespace MindMap
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             frmSave formSave = new frmSave();
-            formSave.ShowDialog();
+            formSave.mindmap = this;
+            formSave.getListNode(this.listNode);
+            if (!isExisted)
+            {
+                formSave.ShowDialog();
+            }
+            else
+            {
+                formSave.update();
+                this.isExisted = true;
+            }
         }
+
 
         private void openToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             frmOpen formOpen = new frmOpen();
+            formOpen.mindmap = this;
             formOpen.ShowDialog();
         }
+
+     
+     
     }
 }

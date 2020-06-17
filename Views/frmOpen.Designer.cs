@@ -35,12 +35,13 @@
             // ltvOpen
             // 
             this.ltvOpen.HideSelection = false;
-            this.ltvOpen.Location = new System.Drawing.Point(13, 22);
-            this.ltvOpen.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ltvOpen.Location = new System.Drawing.Point(13, 13);
+            this.ltvOpen.Margin = new System.Windows.Forms.Padding(4);
             this.ltvOpen.Name = "ltvOpen";
-            this.ltvOpen.Size = new System.Drawing.Size(537, 363);
+            this.ltvOpen.Size = new System.Drawing.Size(458, 226);
             this.ltvOpen.TabIndex = 1;
             this.ltvOpen.UseCompatibleStateImageBehavior = false;
+            this.ltvOpen.Click += new System.EventHandler(this.ltvOpen_Click);
             // 
             // btnOpen
             // 
@@ -48,28 +49,29 @@
             this.btnOpen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnOpen.Font = new System.Drawing.Font("Tahoma", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnOpen.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.btnOpen.Location = new System.Drawing.Point(409, 393);
-            this.btnOpen.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnOpen.Location = new System.Drawing.Point(355, 247);
+            this.btnOpen.Margin = new System.Windows.Forms.Padding(4);
             this.btnOpen.Name = "btnOpen";
-            this.btnOpen.Size = new System.Drawing.Size(111, 59);
+            this.btnOpen.Size = new System.Drawing.Size(99, 38);
             this.btnOpen.TabIndex = 2;
             this.btnOpen.Text = "Open";
             this.btnOpen.UseVisualStyleBackColor = false;
+            this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
             // 
             // frmOpen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.ClientSize = new System.Drawing.Size(562, 465);
+            this.ClientSize = new System.Drawing.Size(484, 298);
             this.Controls.Add(this.btnOpen);
             this.Controls.Add(this.ltvOpen);
             this.Font = new System.Drawing.Font("Tahoma", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "frmOpen";
             this.Opacity = 0.97D;
-            this.Text = "frmOpen";
+            this.Text = "Open";
             this.ResumeLayout(false);
 
         }

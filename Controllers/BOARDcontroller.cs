@@ -1,6 +1,7 @@
 ﻿using MindMap.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,26 @@ namespace MindMap.Controllers
                 }
             }
         }
+         
+        public static BOARD getBOARD(int idboard)
+        {
+            using(var _context = new MINDMAPEntities())
+            {
+                var board = (from b in _context.BOARDs.AsEnumerable()
+                             where b.ID == idboard
+                             select b).
+                             Select(x => new BOARD
+                             {
+                                 ID = x.ID,
+                                 COLOR = x.COLOR,
+                                 WIDTH = x.WIDTH,
+                                 HEIGHT = x.HEIGHT
+                             }).ToList();
+                return board[0];
+                             
+            }
+        }
+        
 
         public static bool AddBoard(BOARD board)
         {
@@ -41,7 +62,25 @@ namespace MindMap.Controllers
             {
                 return false;
             }
-
         }
+
+        public static bool updateBoard(BOARD board)
+        {
+            try
+            {
+               using(var _context = new MINDMAPEntities())
+                {
+                    _context.BOARDs.AddOrUpdate(board);
+                    _context.SaveChanges();
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+
     }
 }

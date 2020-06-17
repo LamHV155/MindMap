@@ -72,6 +72,9 @@
     <Compile Include="Controllers\Objects\FormatTable.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controllers\Objects\MenuButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controllers\Objects\Node.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -105,6 +108,12 @@
     <Compile Include="Models\TOPIC.cs">
       <DependentUpon>MindMap.tt</DependentUpon>
     </Compile>
+    <Compile Include="Views\frmMenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\frmMenu.Designer.cs">
+      <DependentUpon>frmMenu.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\frmOpen.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,6 +134,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Views\frmMenu.resx">
+      <DependentUpon>frmMenu.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\frmOpen.resx">
       <DependentUpon>frmOpen.cs</DependentUpon>
     </EmbeddedResource>
@@ -164,7 +176,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>

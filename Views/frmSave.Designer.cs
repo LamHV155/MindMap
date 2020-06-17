@@ -44,6 +44,7 @@
             this.btnSave.TabIndex = 0;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = false;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // tbxSave
             // 
@@ -73,10 +74,10 @@
             this.Controls.Add(this.btnSave);
             this.Font = new System.Drawing.Font("Tahoma", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "frmSave";
             this.Opacity = 0.95D;
-            this.Text = "frmSave";
+            this.Text = "Save";
             this.ResumeLayout(false);
             this.PerformLayout();
 

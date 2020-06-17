@@ -11,9 +11,10 @@ namespace MindMap.Controllers.Objects
     public class Board : Panel
     {
         public PictureBox picbox;
- 
-        public Board(Color bcolor, Point location, Size size) : base()
+        public int id = -1;
+        public Board(int id, Color bcolor, Point location, Size size) : base()
         {
+            this.id = id;
             this.BackColor = bcolor;
             this.Location = location;
             this.Size = size;

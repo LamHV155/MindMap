@@ -16,6 +16,7 @@ namespace MindMap.Models
     {
         public string NAME_S { get; set; }
         public int ID_BOARD { get; set; }
+        public Nullable<System.DateTime> DATE_MODIFIED { get; set; }
     
         public virtual BOARD BOARD { get; set; }
     }

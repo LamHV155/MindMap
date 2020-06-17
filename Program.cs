@@ -17,7 +17,7 @@ namespace MindMap
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MindMap());
+            Application.Run(new frmMenu());
         }
     }
 }

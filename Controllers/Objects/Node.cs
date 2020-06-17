@@ -23,11 +23,11 @@ namespace MindMap.Controllers.Objects
         public Color backcolor;
         public float size;
 
-        private Point curLocation;
-        private Point curParentLocation;
+        public Point curLocation;
+        public Point curParentLocation;
         
        
-        public Node(int id, string label, Point location, Size size, Board board, Color bcolor, Color fcolor, mPath path, string font, int textsise, string shape, Node parent=null) : base()
+        public Node(int id, string label, Point location, Size size, Board board, Color bcolor, Color fcolor, mPath path, float size2, string font, int textsise, string shape, Node parent) : base()
         {
             SetStyle(ControlStyles.StandardClick | ControlStyles.StandardDoubleClick, true);
 
@@ -53,7 +53,7 @@ namespace MindMap.Controllers.Objects
             this.Text = label;
             this.FlatStyle = FlatStyle.Flat;
             this.shape = shape;
-            this.size = 1;
+            this.size = size2;
            
             this.LocationChanged += Node_LocationChanged;
             this.parent.LocationChanged += Parent_LocationChanged;
@@ -122,15 +122,15 @@ namespace MindMap.Controllers.Objects
         }
 
 
-        private void Parent_LocationChanged(object sender, EventArgs e)
+        public void Parent_LocationChanged(object sender, EventArgs e)
         {
-            
-            if(this.IsDisposed == false)
+
+            if (this.IsDisposed == false)
             {
                 drawPath(curLocation, curParentLocation, this.board.picbox.BackColor, this.path.size + 2);
                 drawPath(curLocation, this.parent.Location, this.path.color, this.path.size);
                 curParentLocation = this.parent.Location;
-           } 
+            } 
         }
 
         private void Node_LocationChanged(object sender, EventArgs e)
@@ -176,6 +176,7 @@ namespace MindMap.Controllers.Objects
             {
                 TextBox tb = (TextBox)sender;
                 this.Text = tb.Text;
+               
                 tb.Dispose();
             }
         }

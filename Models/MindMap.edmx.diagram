@@ -4,14 +4,13 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="3db1c7e86f2b4aaeb7c6d92abc8f8422" Name="Diagram1">
-        <EntityTypeShape EntityType="MINDMAPModel.BOARD" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MINDMAPModel.MENU" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MINDMAPModel.STORAGE" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="MINDMAPModel.TOPIC" Width="1.5" PointX="3.5" PointY="3.125" IsExpanded="true" />
-        <AssociationConnector Association="MINDMAPModel.FK__STORAGE__ID_BOAR__5CD6CB2B" ManuallyRouted="false" />
-        <AssociationConnector Association="MINDMAPModel.FK__TOPIC__ID_BOARD__3B75D760" ManuallyRouted="false" />
-        <AssociationConnector Association="MINDMAPModel.FK__TOPIC__ID_PARENT__3C69FB99" ManuallyRouted="false" />
+      <Diagram DiagramId="f3cb8cfd00ba42dc9c59849e9ff96c37" Name="Diagram1">
+        <EntityTypeShape EntityType="MINDMAPModel.BOARD" Width="1.5" PointX="1.25" PointY="3.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="MINDMAPModel.MENU" Width="1.5" PointX="7.375" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MINDMAPModel.STORAGE" Width="1.5" PointX="1.25" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="MINDMAPModel.TOPIC" Width="1.5" PointX="3.75" PointY="0.625" IsExpanded="true" />
+        <AssociationConnector Association="MINDMAPModel.FK__STORAGE__ID_BOAR__2B3F6F97" ManuallyRouted="false" />
+        <AssociationConnector Association="MINDMAPModel.FK__TOPIC__ID_BOARD__267ABA7A" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
