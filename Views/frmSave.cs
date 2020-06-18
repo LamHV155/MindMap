@@ -61,17 +61,22 @@ namespace MindMap.Views
             List<TOPIC> existTopics = new List<TOPIC>() { };
             existTopics = TOPICcontroller.getListTopic(board.ID);
             List<TOPIC> updateTopics = new List<TOPIC>();
-            foreach (TOPIC topic in convertNodeToTopic(board, this.listNode))
+            List<TOPIC> newTopics = new List<TOPIC>();
+            newTopics = convertNodeToTopic(board, this.listNode);
+            foreach (TOPIC topic in newTopics.ToList())
             {
-                foreach (TOPIC etopic in existTopics)
+                foreach (TOPIC etopic in existTopics.ToList())
                 {
                     if (topic.ID == etopic.ID)
                     {
                         updateTopics.Add(topic);
+                        newTopics.Remove(topic);
+                        
                     }
                 }
             }
             TOPICcontroller.updateListTopic(updateTopics);
+            TOPICcontroller.addListTopic(newTopics, board.ID);
 
             BOARDcontroller.updateBoard(board);
 

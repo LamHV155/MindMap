@@ -7,7 +7,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using MindMap.Models;
-
+using System.Data.Entity;
 namespace MindMap.Controllers
 {
     public class TOPICcontroller
@@ -52,7 +52,32 @@ namespace MindMap.Controllers
             }    
         }
 
-        public static List<TOPIC> getListTopic(int idboard)
+        public static bool addListTopic(List<TOPIC> listTopic, int idboard)
+        {
+            try
+            {
+                using (var _context = new MINDMAPEntities())
+                {
+                    var board = _context.BOARDs.Where(x => x.ID == idboard).First();
+                  
+                    foreach (TOPIC topic in listTopic.AsEnumerable())
+                    {
+                        topic.BOARD = board;
+                        _context.TOPICs.Add(topic);
+                        _context.Entry(board).State = EntityState.Unchanged;
+
+                    }
+                    _context.SaveChanges();
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+            public static List<TOPIC> getListTopic(int idboard)
         {
             using(var _context = new MINDMAPEntities())
             {
@@ -118,6 +143,27 @@ namespace MindMap.Controllers
                     {
                         var t = _context.TOPICs.Where(x => x.ID == topic.ID).First();
                         _context.TOPICs.Remove(t);
+                    }
+                    _context.SaveChanges();
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool deleteNode(int idboard)
+        {
+            try
+            {
+                using(var _context = new MINDMAPEntities())
+                {
+                    var nodes = _context.TOPICs.Where(x => x.ID_BOARD == idboard).ToList();
+                    foreach(TOPIC node in nodes.AsEnumerable())
+                    {
+                        _context.TOPICs.Remove(node);
                     }
                     _context.SaveChanges();
                     return true;

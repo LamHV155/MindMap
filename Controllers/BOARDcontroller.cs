@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -71,6 +72,25 @@ namespace MindMap.Controllers
                using(var _context = new MINDMAPEntities())
                 {
                     _context.BOARDs.AddOrUpdate(board);
+                    _context.SaveChanges();
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool deleteBoardAndStorage(int id)
+        {
+            try
+            {
+                using(var _context = new MINDMAPEntities())
+                {
+                    var board = _context.BOARDs.Where(x => x.ID == id).First();
+                    board.STORAGEs.Clear();                   
+                   _context.BOARDs.Remove(board);
                     _context.SaveChanges();
                     return true;
                 }

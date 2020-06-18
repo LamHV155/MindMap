@@ -101,6 +101,7 @@ namespace MindMap.Views
                     int idboard = STORAGEcontroller.getIDBoard(name);
                     BOARD board = BOARDcontroller.getBOARD(idboard);
                     mindmap.reNewListNode(addNodeToBoard(board), board);
+                
                     name = "";
                     this.Dispose();
                 }
@@ -113,6 +114,7 @@ namespace MindMap.Views
                     this.mindmap = mm;
                     mm.board.Dispose();
                     mm.reNewListNode(addNodeToBoard(board), board);
+               
                     mm.Show();
                     this.Dispose();
                 }

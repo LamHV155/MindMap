@@ -26,7 +26,7 @@ namespace MindMap
         public Board board;
         private mPath path;
         private FormatTable formatTable;
-
+      
         public bool isExisted = false;       
 
         //data from menu
@@ -115,7 +115,7 @@ namespace MindMap
 
         //Tools Panel & Board
         #region Panel & Board
-        private Board createBoardAndMainNode()
+        public Board createBoardAndMainNode()
         {
             Board board = new Board(-1, M_colorBoard, new Point(0, 100), new Size(this.Width - 20, this.Height - 140));
             this.board = board;
@@ -123,12 +123,16 @@ namespace MindMap
             Point nLocation = new Point(board.Width/2 - nSize.Width/2, board.Height/2 - nSize.Height/2);
             path = new mPath(4, M_colorPath, M_stylePath);
 
+            idnode = TOPICcontroller.getID();
             Node n = createNode(idnode, "Main Topic", nLocation, nSize, M_colorParentNode, Color.White, path, 1, null, 14, M_shapeParentNode);
             board.picbox.Controls.Add(n);
 
             displayBorderNode(n);
             idnode++;
 
+
+            isExisted = false;
+            listNode.Clear();
             //Add List 
             listNode.Add(n);
             
@@ -142,6 +146,8 @@ namespace MindMap
             this.board = board;
             this.Controls.Add(this.board);
         }
+
+       
   
         private Panel createToolPanel()
         {
@@ -345,6 +351,7 @@ namespace MindMap
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            this.Dispose();
             
         }
 
@@ -372,7 +379,11 @@ namespace MindMap
             formOpen.ShowDialog();
         }
 
-     
-     
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmDelete formDel = new frmDelete();
+            formDel.mindmap = this;
+            formDel.ShowDialog();
+        }
     }
 }

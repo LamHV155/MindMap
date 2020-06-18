@@ -59,6 +59,7 @@ namespace MindMap.Controllers.Objects
         private void Pnl_DoubleClick(object sender, EventArgs e)
         {
             MindMap mm = new MindMap(this.colorBoard, this.colorParent, this.colorChild, this.colorPath, this.shapeParent, this.shapeChild, this.stylePath);
+         
             mm.Show();
         }
 

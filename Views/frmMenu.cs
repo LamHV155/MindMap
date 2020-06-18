@@ -59,6 +59,7 @@ namespace MindMap.Views
             if(this.menuBtn != null)
             {
                 MindMap mm = new MindMap(this.menuBtn.colorBoard, this.menuBtn.colorParent, this.menuBtn.colorChild, this.menuBtn.colorPath, this.menuBtn.shapeParent, this.menuBtn.shapeChild, this.menuBtn.stylePath);
+           
                 mm.Show();
             }
             else

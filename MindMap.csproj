@@ -108,6 +108,12 @@
     <Compile Include="Models\TOPIC.cs">
       <DependentUpon>MindMap.tt</DependentUpon>
     </Compile>
+    <Compile Include="Views\frmDelete.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\frmDelete.Designer.cs">
+      <DependentUpon>frmDelete.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\frmMenu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -134,6 +140,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Views\frmDelete.resx">
+      <DependentUpon>frmDelete.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\frmMenu.resx">
       <DependentUpon>frmMenu.cs</DependentUpon>
     </EmbeddedResource>

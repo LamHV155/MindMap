@@ -94,6 +94,8 @@ namespace MindMap.Controllers
                 return false;
             }
         }
+
+
         public static string getNameStorage(int idboard)
         {
             using(var _context = new MINDMAPEntities())
