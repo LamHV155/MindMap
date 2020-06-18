@@ -36,10 +36,11 @@
             // 
             // flpMenu
             // 
+            this.flpMenu.AutoScroll = true;
             this.flpMenu.BackColor = System.Drawing.Color.White;
             this.flpMenu.Location = new System.Drawing.Point(13, 13);
             this.flpMenu.Name = "flpMenu";
-            this.flpMenu.Size = new System.Drawing.Size(920, 626);
+            this.flpMenu.Size = new System.Drawing.Size(948, 626);
             this.flpMenu.TabIndex = 0;
             // 
             // btnOpen
@@ -85,13 +86,14 @@
             this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = false;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // frmMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.ClientSize = new System.Drawing.Size(946, 691);
+            this.ClientSize = new System.Drawing.Size(973, 691);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnCreate);
             this.Controls.Add(this.btnOpen);
